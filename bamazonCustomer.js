@@ -13,11 +13,13 @@ var connection = mysql.createConnection({
 });
 
 connection.connect(function (err) {
-	// if (err) throw err;
+	if (err) throw err;
+	displayInventory();
 	initialPurchase();
 });
 
 
+// displayInventory();
 function validateInput(value) {
 	var integer = Number.isInteger(parseFloat(value));
 	var sign = Math.sign(value);
@@ -26,11 +28,10 @@ function validateInput(value) {
 		return true;
 	}
 	else {
-		return 'Please enter a whole non-zero number.';
+		return 'Please enter a valid number.';
 	}
 
 }
-
 
 function initialPurchase() {
 	inquirer
@@ -55,38 +56,41 @@ function initialPurchase() {
 				var queryStr = 'SELECT * FROM products WHERE ?';
 
 				connection.query(queryStr, { item_id: item }, function (err, data) {
-					// if (err) throw err;
+					if (err) throw err;
 					if (data.length === 0) {
-						console.log('ERROR: Invalid Item ID. Please select a valid Item ID.');
-						displayInventory();
+						console.log('ERROR: Please enter a valid Item ID.');
+						// displayInventory();
 					}
 
 					else {
-						console.log("you got a valid ID!");
+						console.log("\n-------------------------------------------------------------\n");
+						console.log("Item ID Validated!");
 					}
 
 					var productData = data[0];
 					if (quantity <= productData.stock_quantity) {
 						console.log('We have the item in stock!');
+						console.log("\n-------------------------------------------------------------\n");
 
+						//This will update the inventory
 						var updateQueryStr = 'UPDATE products SET stock_quantity = ' + (productData.stock_quantity - quantity) + ' WHERE item_id = ' + item;
-						// Update the inventory
 						connection.query(updateQueryStr, function (err, data) {
-							// if (err) throw err;
+							if (err) throw err;
 
-							console.log('Order placed! Your total is $' + productData.price * quantity);
-							console.log('Thank you for shopping with us!');
-							console.log("\n---------------------------------------------------------------------\n");
+							console.log("\n-------------------------------------------------------------\n");
+							console.log('Your order has been placed! Your total is $' + productData.price * quantity);
+							console.log('Thank you!');
+							console.log("\n-------------------------------------------------------------\n");
 
 							connection.end();
 						})
 					}
 					else {
-						console.log('Sorry, there is not enough product in stock, your order can not be placed as is.');
+						console.log("\n-------------------------------------------------------------\n");
+						console.log('Insufficient Quantity! We do not have enough.');
 						console.log('Please modify your order.');
-						console.log("\n---------------------------------------------------------------------\n");
-
-						displayInventory();
+						console.log("\n-------------------------------------------------------------\n");
+						connection.end();
 					}
 				})
 			})
@@ -95,25 +99,17 @@ function initialPurchase() {
 function displayInventory() {
 	queryStr = 'SELECT * FROM products';
 	connection.query(queryStr, function (err, data) {
-		var strOut = '';
+		console.log("\n");
+		var stringOutput;
 		for (var i = 0; i < data.length; i++) {
-			strOut = '\n';
-			strOut += 'Item ID: ' + data[i].item_id + '  ||  ';
-			strOut += 'Product: ' + data[i].product_name + '  ||  ';
-			strOut += 'Department: ' + data[i].department_name + '  ||  ';
-			strOut += 'Price: $' + data[i].price;
+			stringOutput = '';
+			stringOutput += 'Item ID: ' + data[i].item_id + '  ||  ';
+			stringOutput += 'Product: ' + data[i].product_name + '  ||  ';
+			stringOutput += 'Department: ' + data[i].department_name + '  ||  ';
+			stringOutput += 'Price: $' + data[i].price;
 
-			console.log(strOut);
+			console.log(stringOutput);
 		}
-
 		console.log("---------------------------------------------------------------------\n");
-
-		initialPurchase();
 	})
 }
-
-function runBamazon() {
-
-	displayInventory();
-}
-runBamazon();

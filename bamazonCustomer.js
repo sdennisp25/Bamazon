@@ -102,11 +102,7 @@ function displayInventory() {
 		console.log("\n");
 		var stringOutput;
 		for (var i = 0; i < data.length; i++) {
-			stringOutput = '';
-			stringOutput += 'Item ID: ' + data[i].item_id + '  ||  ';
-			stringOutput += 'Product: ' + data[i].product_name + '  ||  ';
-			stringOutput += 'Department: ' + data[i].department_name + '  ||  ';
-			stringOutput += 'Price: $' + data[i].price;
+			var stringOutput = "ID: " + data[i].item_id + " || Price: $" + data[i].price + " || Product: " + data[i].product_name + " || Department: " + data[i].department_name;
 
 			console.log(stringOutput);
 		}

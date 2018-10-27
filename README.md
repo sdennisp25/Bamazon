@@ -13,6 +13,6 @@
 
 
 # Images of the program
-![Alt text](/images/bamwork1)
-![Alt text](/images/bamwork2)
-![Alt text](/images/bamnowork)
+![Alt text](/images/bamwork1.png)
+![Alt text](/images/bamwork2.png)
+![Alt text](/images/bamnowork.png)
